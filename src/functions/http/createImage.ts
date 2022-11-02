@@ -10,8 +10,6 @@ import { CreateImageRequest } from "../../requests/CreateImageRequest";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-
-
 const groupsTable = process.env.GROUPS_TABLE;
 const imagesTable = process.env.IMAGES_TABLE;
 const bucketName = process.env.IMAGES_S3_BUCKET;

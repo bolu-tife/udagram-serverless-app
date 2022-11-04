@@ -22,7 +22,7 @@ export const createGroup = {
               method: 'post',
               path: 'groups',
               cors:  true,
-              authorizer: "Auth",
+              authorizer: "RS256Auth",
               request: {
                 schemas: {
                   'application/json': createGroupSchema,
@@ -67,7 +67,7 @@ export const createImage = {
               method: 'post',
               path: 'groups/{groupId}/images',
               cors:  true,
-              authorizer: "Auth",
+              authorizer: "RS256Auth",
               request: {
                 schemas: {
                   'application/json': createImageSchema,

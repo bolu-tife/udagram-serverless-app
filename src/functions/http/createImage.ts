@@ -8,6 +8,8 @@ import { v4 } from "uuid";
 import { createImageSchema } from "./schema";
 import { CreateImageRequest } from "../../requests/CreateImageRequest";
 
+
+
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 const groupsTable = process.env.GROUPS_TABLE;
@@ -97,5 +99,8 @@ function getUploadUrl(imageId: string): string {
         Expires: parseInt(urlExpiration)
       })
   }
+
+
+
 
 export const main = middyfy(createImage);

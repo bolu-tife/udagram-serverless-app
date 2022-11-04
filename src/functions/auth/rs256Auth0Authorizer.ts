@@ -4,17 +4,16 @@ import { verify } from 'jsonwebtoken'
 import { JwtToken } from '../../auth/JwtToken'
 import * as AWS from "aws-sdk";
 import { middyfy } from "@libs/lambda";
-// import {secretsManager} from 'middy/middlewares'
 
-const secretId = process.env.AUTH_0_SECRET_ID
-const secretField = process.env.AUTH_0_SECRET_FIELD
+const secretId = process.env.AUTH_0_CERT_ID
+const secretField = process.env.AUTH_0_CERT_FIELD
 const client = new AWS.SecretsManager();
 let cachedSecret: string
+
 
 const handler = async (event: APIGatewayTokenAuthorizerEvent, context): Promise<APIGatewayAuthorizerResult> => {
     console.log('Processing authorization');
     try {
-    // const decodedToken =  await verifyToken(event.authorizationToken, context.AUTH0_SECRET[secretField])
         const decodedToken =  await verifyToken(event.authorizationToken)
 
     console.log('User was authorized')
@@ -43,7 +42,7 @@ const  IAMPolicyMaker = (effect: "Allow" | "Deny", user?: string) => {
       }
 }
 
-const verifyToken =  async(authHeader: string): Promise<JwtToken> => {
+const verifyToken =  async (authHeader: string, ): Promise<JwtToken> => {
     if (!authHeader){
         throw new Error("No authentication header")
     }
@@ -55,9 +54,9 @@ const verifyToken =  async(authHeader: string): Promise<JwtToken> => {
     const token = split[1]
 
     const secretObject:any = await getSecret()
-    const secret = secretObject[secretField]
+    const cert = secretObject[secretField]
    
-    return verify(token, secret) as JwtToken
+    return verify(token, cert, {algorithms: ['rs256']}) as JwtToken
 }
 
 async function getSecret(){
@@ -74,16 +73,6 @@ async function getSecret(){
   return JSON.parse(cachedSecret)
 }
 
-// const options = secretsManager({
-//   cache: true,
-//   cacheExpiryInMillis:60000,
-//   throwOnFailedCall: true,
-//   secrets:{
-//     AUTH0_SECRET: secretId
-//   }
-// })
-
-// export const main = middyfy(handler,options);
 export const main = handler;
 
 

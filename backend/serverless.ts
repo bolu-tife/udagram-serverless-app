@@ -15,7 +15,7 @@ import { Auth, RS256Auth } from "@functions/auth";
 const serverlessConfiguration: AWS = {
   service: "service-udagram-app",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild"],
+  plugins: ["serverless-esbuild", "serverless-dynamodb-local", "serverless-offline",],
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
@@ -36,7 +36,6 @@ const serverlessConfiguration: AWS = {
       SIGNED_URL_EXPIRATION: "300",
       CONNECTIONS_TABLE: "Connections-${self:provider.stage}",
       THUMBNAILS_S3_BUCKET: "serverless-udagram-thumbnail-${self:provider.stage}-554333721805",
-      AUTH_0_SECRET: "FF9nCBz4AYL_8Dfm37aAURl4W9JXAjvhP59INr5IubImGmLayHdUOpnbVpE2UFQR", 
       AUTH_0_SECRET_ID: "Auth0Secret-${self:provider.stage}",
      AUTH_0_SECRET_FIELD: "Auth0Secret",
      AUTH_0_CERT_ID:"Auth0Cert-${self:provider.stage}",
@@ -137,7 +136,18 @@ const serverlessConfiguration: AWS = {
       platform: "node",
       concurrency: 10,
     },
-    topicName: "ImagesTopic-${self:provider.stage}"
+    topicName: "ImagesTopic-${self:provider.stage}",
+    "serverless-offline": {port:3003},
+    dynamodb:{
+      start: {
+        port: 8000,
+      inMemory: true,
+      migrate: true,
+      shell: true,
+      },
+    stages: ['dev'],
+    }
+    
   },
   resources: {
     Resources: {
@@ -440,7 +450,6 @@ const serverlessConfiguration: AWS = {
     }
     }
   },
-
   KMSKeyCertAlias:{
     Type: "AWS::KMS::Alias",
     Properties: {
